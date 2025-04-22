@@ -18,6 +18,21 @@
   </properties>
 
   <dependencies>
+    <!-- Spring Web MVC -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-webmvc</artifactId>
+      <version>6.2.1</version>
+    </dependency>
+
+    <!-- Servlet API -->
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>4.0.2</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Test   -->
     <dependency>
       <groupId>junit</groupId>
@@ -28,7 +43,7 @@
   </dependencies>
 
   <build>
-    <finalName>spring-web-demo</finalName>
+    <finalName>yandex-practicum-blog-app</finalName>
     <pluginManagement>
       <plugins>
         <plugin>
