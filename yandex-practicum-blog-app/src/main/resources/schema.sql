@@ -4,8 +4,8 @@ create table if not exists posts
     id         bigint primary key auto_increment,
     title      varchar(256) not null,
     text       text not null,
-    imagePath  text not null,
-    likesCount integer not null default 0
+    image_path  varchar(512) not null,
+    likes_count integer      not null default 0
 );
 
 -- Таблица с комментариями

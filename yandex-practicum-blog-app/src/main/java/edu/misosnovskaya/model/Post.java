@@ -1,5 +1,6 @@
 package edu.misosnovskaya.model;
 
+import edu.misosnovskaya.entity.CommentEntity;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -20,8 +21,16 @@ public class Post {
 
     private int likesCount;
 
-    private List<Comment> comments = new ArrayList<>();
+    private List<CommentEntity> comments = new ArrayList<>();
 
-    private Set<Tag> tags = new HashSet<>();
+    private Set<String> tags = new HashSet<>();
+
+    public String getTextParts() {
+        return text.length() > 300 ? text.substring(0, 300) + "..." : text;
+    }
+
+    public String getTagsAsText() {
+        return String.join(" ", tags);
+    }
 
 }
