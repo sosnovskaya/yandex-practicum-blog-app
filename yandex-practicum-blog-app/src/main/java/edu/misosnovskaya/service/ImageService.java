@@ -1,7 +1,7 @@
 package edu.misosnovskaya.service;
 
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.ByteArrayResource;
 
 public interface ImageService {
-    Resource getImage(Long postId);
+    ByteArrayResource getImage(Long postId);
 }

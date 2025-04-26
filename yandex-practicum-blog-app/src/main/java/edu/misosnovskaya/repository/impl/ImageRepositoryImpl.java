@@ -24,7 +24,7 @@ public class ImageRepositoryImpl implements ImageRepository {
     }
 
     private static final String SELECT_IMAGE_PATH_SQL = """
-                select p.imagePath
+                select p.image_path
                  from posts p
                   where p.id = ?
             """;

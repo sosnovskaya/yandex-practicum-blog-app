@@ -29,6 +29,6 @@ create table if not exists post_tags
     post_id bigint not null,
     tag_id  bigint not null,
     primary key (post_id, tag_id),
-    foreign key (post_id) references posts (id),
-    foreign key (tag_id) references tags (id)
+    foreign key (post_id) references posts (id) on delete cascade,
+    foreign key (tag_id) references tags (id) on delete cascade
 );
