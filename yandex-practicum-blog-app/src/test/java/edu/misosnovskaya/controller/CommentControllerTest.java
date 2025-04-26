@@ -1,74 +1,62 @@
 package edu.misosnovskaya.controller;
 
 import edu.misosnovskaya.config.TestConfig;
-import edu.misosnovskaya.utils.SqlRequestsUtils;
+import edu.misosnovskaya.service.CommentService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {TestConfig.class})
+@SpringJUnitConfig(classes = {TestConfig.class})
+@WebAppConfiguration
 class CommentControllerTest {
 
     @Autowired
     private CommentController commentController;
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    @MockitoBean
+    private CommentService commentService;
     private MockMvc mockMvc;
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(commentController).build();
-
-        jdbcTemplate.execute(SqlRequestsUtils.DELETE_ALL_COMMENTS_SQL);
-        jdbcTemplate.execute(SqlRequestsUtils.DELETE_ALL_POSTS_SQL);
-        jdbcTemplate.execute("insert into posts(id, title, text, image_path, likes_count) values (1, 'post1', 'post text', 'path to image', 0)");
-        jdbcTemplate.execute("insert into comments(id, post_id, text) values (1, 1, 'comment text')");
     }
 
     @Test
-    void addComment() throws Exception {
-        mockMvc.perform(post("/post")
-                        .param("title", "titletitletitle")
-                        .param("content", "contentcontentcontentcontentcontentcontent")
-                        .param("tags", "tag1, tag2")
-                        .param("imageUrl", "imageUrl"))
+    void testAddComment() throws Exception {
+        mockMvc.perform(post("/posts/1/comments")
+                        .param("id", "id")
+                        .param("commentId", "commentId")
+                        .param("text", "text"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/post"));
+                .andExpect(redirectedUrlPattern("/posts/*"));
     }
 
     @Test
-    void updateComment() throws Exception {
-        mockMvc.perform(post("/post")
-                        .param("title", "titletitletitle")
-                        .param("content", "contentcontentcontentcontentcontentcontent")
-                        .param("tags", "tag1, tag2")
-                        .param("imageUrl", "imageUrl"))
+    void testUpdateComment() throws Exception {
+        mockMvc.perform(post("/posts/1/comments/1")
+                        .param("id", "id")
+                        .param("commentId", "commentId")
+                        .param("text", "text"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/post"));
-
+                .andExpect(redirectedUrlPattern("/posts/*"));
     }
 
     @Test
-    void deleteComment() throws Exception {
-        mockMvc.perform(post("/post")
-                        .param("title", "titletitletitle")
-                        .param("content", "contentcontentcontentcontentcontentcontent")
-                        .param("tags", "tag1, tag2")
-                        .param("imageUrl", "imageUrl"))
+    void testDeleteComment() throws Exception {
+        mockMvc.perform(post("/posts/1/comments/1/delete")
+                        .param("id", "id")
+                        .param("commentId", "commentId"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/post"));
-
+                .andExpect(redirectedUrlPattern("/posts/*"));
     }
 }
