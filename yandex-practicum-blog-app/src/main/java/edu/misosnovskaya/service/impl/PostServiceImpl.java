@@ -7,6 +7,7 @@ import edu.misosnovskaya.mappers.PostMapper;
 import edu.misosnovskaya.model.Paging;
 import edu.misosnovskaya.model.PagingPostsInfo;
 import edu.misosnovskaya.model.Post;
+import edu.misosnovskaya.repository.CommentRepository;
 import edu.misosnovskaya.repository.PostRepository;
 import edu.misosnovskaya.repository.TagRepository;
 import edu.misosnovskaya.service.PostService;
@@ -29,6 +30,8 @@ public class PostServiceImpl implements PostService {
     private final PostMapper postMapper;
 
     private final PostRepository postRepository;
+
+    private final CommentRepository commentRepository;
 
     private final PostProcessUtils postProcessUtils;
 
@@ -57,12 +60,14 @@ public class PostServiceImpl implements PostService {
     public Post getPost(Long postId) {
         log.info(String.format("Start searching post, [postId = %s].", postId));
 
-        PostEntity post = postRepository.findPost(postId)
+        PostEntity postEntity = postRepository.findPost(postId)
                 .orElseThrow(() -> new PostNotFoundException(String.format("Can not find post, [postId = %s]", postId)));
 
-        log.info(String.format("Post is found, [post = %s].", post));
+        log.info(String.format("Post is found, [post = %s].", postEntity));
 
-        return postMapper.toModel(post);
+        Post post = postMapper.toModel(postEntity);
+        post.setComments(commentRepository.getComments(postId));
+        return post;
     }
 
     @Override

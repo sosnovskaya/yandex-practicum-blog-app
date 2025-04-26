@@ -36,5 +36,4 @@ public class Post {
     public String getTagsAsText() {
         return String.join(" ", tags);
     }
-
 }

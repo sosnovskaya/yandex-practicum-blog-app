@@ -28,7 +28,7 @@ public class PostController {
             @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber,
             Model model) {
         PagingPostsInfo pagingPostsInfo = postService.findPagingPosts(search, pageSize, pageNumber);
-        model.addAttribute("posts", pagingPostsInfo.getPaging());
+        model.addAttribute("posts", pagingPostsInfo.getPosts());
         model.addAttribute("search", search);
         model.addAttribute("paging", pagingPostsInfo.getPaging());
         return "posts";
@@ -46,7 +46,7 @@ public class PostController {
         return "add-post";
     }
 
-    @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/posts")
     public String addPost(
             @RequestParam("title") String title,
             @RequestParam("text") String text,
@@ -71,7 +71,7 @@ public class PostController {
         return "redirect:/add-post";
     }
 
-    @PostMapping(value = "/posts/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/posts/{id}")
     public String editPost(
             @PathVariable(name = "id") Long id,
             @RequestParam(name = "title", required = false) String title,

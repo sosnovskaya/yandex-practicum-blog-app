@@ -28,7 +28,7 @@ public class SqlRequestUtils {
             """;
 
     public static final String SELECT_POST_BY_ID_SQL = """
-            select * from posts
+            select id, title, text, image_path, likes_count from posts
               where id = ?
             """;
 

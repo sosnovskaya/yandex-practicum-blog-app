@@ -1,5 +1,6 @@
 package edu.misosnovskaya.repository.impl;
 
+import edu.misosnovskaya.entity.CommentEntity;
 import edu.misosnovskaya.exceptions.CommonDBException;
 import edu.misosnovskaya.repository.CommentRepository;
 import edu.misosnovskaya.utils.SqlRequestUtils;
@@ -7,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -48,6 +50,18 @@ public class CommentRepositoryImpl implements CommentRepository {
     public void deleteComment(Long postId, Long commentId) {
         try {
             jdbcTemplate.update(SqlRequestUtils.DELETE_COMMENT_SQL, commentId);
+        } catch (RuntimeException e) {
+            throw new CommonDBException(
+                    String.format("Exception during deleting post comment, [postId = %s]", postId),
+                    e
+            );
+        }
+    }
+
+    @Override
+    public List<CommentEntity> getComments(Long postId) {
+        try {
+            return jdbcTemplate.query(SqlRequestUtils.SELECT_POST_COMMENTS_SQL, SqlRequestUtils.commentRowMapper, postId);
         } catch (RuntimeException e) {
             throw new CommonDBException(
                     String.format("Exception during deleting post comment, [postId = %s]", postId),

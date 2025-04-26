@@ -16,4 +16,20 @@ public class Paging {
         boolean hasPrevious = pageNumber > 1;
         return new Paging(pageNumber, pageSize, hasNext, hasPrevious);
     }
+
+    public int pageSize() {
+        return pageSize;
+    }
+
+    public boolean hasPrevious() {
+        return hasPrevious;
+    }
+
+    public boolean hasNext() {
+        return hasNext;
+    }
+
+    public int pageNumber() {
+        return pageNumber;
+    }
 }

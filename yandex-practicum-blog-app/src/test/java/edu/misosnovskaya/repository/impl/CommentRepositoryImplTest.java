@@ -17,6 +17,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @WebAppConfiguration
@@ -78,5 +79,19 @@ class CommentRepositoryImplTest {
         List<CommentEntity> comments = jdbcTemplate.query(
                 SqlRequestUtils.SELECT_POST_COMMENTS_SQL, SqlRequestUtils.commentRowMapper, savedPost.getId());
         assertTrue(comments.isEmpty());
+    }
+
+    @Test
+    void testGetComments() {
+        String comment1 = "comment1";
+        String comment2 = "comment2";
+        PostEntity post = TestUtils.getTestPostEntity();
+        PostEntity savedPost = postRepository.insertPost(post);
+        Long comment1Id = commentRepository.insertComment(savedPost.getId(), comment1);
+        Long comment2Id = commentRepository.insertComment(savedPost.getId(), comment2);
+
+        List<CommentEntity> comments = commentRepository.getComments(savedPost.getId());
+
+        assertFalse(comments.isEmpty());
     }
 }

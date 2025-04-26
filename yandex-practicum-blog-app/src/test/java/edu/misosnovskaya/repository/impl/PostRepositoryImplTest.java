@@ -117,11 +117,12 @@ class PostRepositoryImplTest {
         assertTrue(actualPost.isEmpty());
     }
 
-    //@Test
+    @Test
     void updateLikesCount() {
         PostEntity post = TestUtils.getTestPostEntity();
         PostEntity savedPost = postRepository.insertPost(post);
 
+        postRepository.updateLikesCount(savedPost.getId(), true);
         postRepository.updateLikesCount(savedPost.getId(), true);
         postRepository.updateLikesCount(savedPost.getId(), true);
         postRepository.updateLikesCount(savedPost.getId(), false);
