@@ -92,4 +92,20 @@ class PostControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern("/posts/*"));
     }
+
+    @Test
+    void testLikePost() throws Exception {
+        mockMvc.perform(multipart("/posts/1/like")
+                        .param("id", "id")
+                        .param("like", String.valueOf(true)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern("/posts/*"));
+    }
+
+    @Test
+    void testGetPost() throws Exception {
+        mockMvc.perform(get("/posts/1"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("post"));;
+    }
 }

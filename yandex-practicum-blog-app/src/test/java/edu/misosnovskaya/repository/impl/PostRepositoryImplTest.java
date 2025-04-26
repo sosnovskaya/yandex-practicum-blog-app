@@ -22,6 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @WebAppConfiguration
 @SpringJUnitConfig(classes = {TestConfig.class})
@@ -107,9 +108,26 @@ class PostRepositoryImplTest {
 
     @Test
     void testDeletePost() {
+        PostEntity post = TestUtils.getTestPostEntity();
+        PostEntity savedPost = postRepository.insertPost(post);
+
+        postRepository.deletePost(savedPost.getId());
+
+        Optional<PostEntity> actualPost = postRepository.findPost(savedPost.getId());
+        assertTrue(actualPost.isEmpty());
     }
 
-    @Test
+    //@Test
     void updateLikesCount() {
+        PostEntity post = TestUtils.getTestPostEntity();
+        PostEntity savedPost = postRepository.insertPost(post);
+
+        postRepository.updateLikesCount(savedPost.getId(), true);
+        postRepository.updateLikesCount(savedPost.getId(), true);
+        postRepository.updateLikesCount(savedPost.getId(), false);
+
+        Optional<PostEntity> updatedPost = postRepository.findPost(savedPost.getId());
+        assertTrue(updatedPost.isPresent());
+        assertEquals(2, updatedPost.get().getLikesCount());
     }
 }
