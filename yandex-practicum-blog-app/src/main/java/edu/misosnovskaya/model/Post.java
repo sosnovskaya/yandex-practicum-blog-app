@@ -1,6 +1,8 @@
 package edu.misosnovskaya.model;
 
 import edu.misosnovskaya.entity.CommentEntity;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ import java.util.List;
 import java.util.Set;
 
 @Data
+@Builder
+@AllArgsConstructor
 public class Post {
 
     private Long id;

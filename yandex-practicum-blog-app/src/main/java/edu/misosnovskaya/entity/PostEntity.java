@@ -5,11 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 
 @Data
 @Builder
@@ -23,10 +18,4 @@ public class PostEntity {
 
     @Builder.Default
     private int likesCount = 0;
-
-    @Builder.Default
-    private List<CommentEntity> comments = new ArrayList<>();
-
-    @Builder.Default
-    private Set<TagEntity> tags = new HashSet<>();
 }

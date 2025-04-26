@@ -10,9 +10,9 @@ public interface PostRepository {
 
     Optional<PostEntity> findPost(Long id);
 
-    PostEntity savePost(PostEntity post);
+    PostEntity insertPost(PostEntity post);
 
-    PostEntity updatePost(PostEntity post);
+    void updatePost(PostEntity post);
 
     void deletePost(Long id);
 

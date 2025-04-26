@@ -1,21 +1,24 @@
 package edu.misosnovskaya.service.impl;
 
-import edu.misosnovskaya.configuration.AppValues;
 import edu.misosnovskaya.entity.PostEntity;
+import edu.misosnovskaya.entity.TagEntity;
 import edu.misosnovskaya.exceptions.PostNotFoundException;
 import edu.misosnovskaya.mappers.PostMapper;
 import edu.misosnovskaya.model.Paging;
 import edu.misosnovskaya.model.PagingPostsInfo;
 import edu.misosnovskaya.model.Post;
 import edu.misosnovskaya.repository.PostRepository;
+import edu.misosnovskaya.repository.TagRepository;
 import edu.misosnovskaya.service.PostService;
 import edu.misosnovskaya.utils.PostProcessUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,26 +26,28 @@ import java.util.stream.Collectors;
 @Slf4j
 public class PostServiceImpl implements PostService {
 
-    private final AppValues appValues;
-
     private final PostMapper postMapper;
 
     private final PostRepository postRepository;
 
     private final PostProcessUtils postProcessUtils;
 
+    private final TagRepository tagRepository;
+
     @Override
     public Post addPost(String title, String text, MultipartFile image, String tags) {
         log.info(String.format("Start adding post, [title = %s, text = %s, tags = %s].", title, text, tags));
 
+        Set<TagEntity> extractedTags = postProcessUtils.extractHashtags(tags);
+        String imagePath = postProcessUtils.storeFileToPath(image);
+
         PostEntity newPost = PostEntity.builder()
                 .title(title)
                 .text(text)
-                .imagePath(postProcessUtils.storeFileToPath(image, appValues.getUploadDir()))
-                .tags(postProcessUtils.extractHashtags(tags))
+                .imagePath(imagePath)
                 .build();
-        PostEntity savedPost = postRepository.savePost(newPost);
-
+        PostEntity savedPost = postRepository.insertPost(newPost);
+        tagRepository.insertPostTags(savedPost.getId(), extractedTags.stream().toList());
         log.info(String.format("Post added successfully, [post = %s].", savedPost));
 
         return postMapper.toModel(savedPost);
@@ -61,8 +66,27 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post editPost(Long id, String title, String text, MultipartFile image, String tags) {
-        return null;
+    @Transactional
+    public void editPost(Long id, String title, String text, MultipartFile image, String tags) {
+        log.info(String.format("Start updating post, [title = %s, text = %s, tags = %s].", title, text, tags));
+
+        Set<TagEntity> extractedTags = postProcessUtils.extractHashtags(tags);
+        String newImagePath = postProcessUtils.storeFileToPath(image);
+
+        PostEntity updatingPost = postRepository.findPost(id).orElseThrow(() -> new PostNotFoundException("Post is not found!"));
+        postProcessUtils.deleteFile(updatingPost.getImagePath());
+        tagRepository.deletePostTags(id);
+
+        PostEntity newPost = PostEntity.builder()
+                .id(id)
+                .title(title)
+                .text(text)
+                .imagePath(newImagePath)
+                .build();
+        postRepository.updatePost(newPost);
+        tagRepository.insertPostTags(id, extractedTags.stream().toList());
+
+        log.info(String.format("Post updated successfully, [postId = %s].", id));
     }
 
     @Override
@@ -81,6 +105,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void updateLikesCount(Long id, boolean like) {
+        postRepository.updateLikesCount(id, like);
+    }
 
+    @Override
+    public void deletePost(Long id) {
+        postRepository.deletePost(id);
     }
 }

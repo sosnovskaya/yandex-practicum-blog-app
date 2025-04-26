@@ -4,6 +4,7 @@ import edu.misosnovskaya.model.PagingPostsInfo;
 import edu.misosnovskaya.model.Post;
 import edu.misosnovskaya.service.PostService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -45,12 +46,12 @@ public class PostController {
         return "add-post";
     }
 
-    @PostMapping("/posts")
+    @PostMapping(value = "/posts", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String addPost(
             @RequestParam("title") String title,
             @RequestParam("text") String text,
-            @RequestParam("tags") String tags,
-            @RequestParam("image") MultipartFile image) {
+            @RequestParam("image") MultipartFile image,
+            @RequestParam(value = "tags", defaultValue = "") String tags) {
         Post post = postService.addPost(title, text, image, tags);
         return "redirect:/posts/" + post.getId();
     }
@@ -63,14 +64,14 @@ public class PostController {
         return "redirect:/posts/" + id;
     }
 
-    @GetMapping("/posts/{id}/edit")
+    @PostMapping("/posts/{id}/edit")
     public String editPost(@PathVariable(name = "id") Long id, Model model) {
         Post post = postService.getPost(id);
         model.addAttribute("post", post);
-        return "add-post";
+        return "redirect:/add-post";
     }
 
-    @PostMapping("/posts/{id}")
+    @PostMapping(value = "/posts/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public String editPost(
             @PathVariable(name = "id") Long id,
             @RequestParam(name = "title", required = false) String title,
@@ -79,5 +80,13 @@ public class PostController {
             @RequestParam(name = "tags", required = false, defaultValue = "") String tags) {
         postService.editPost(id, title, text, image, tags);
         return "redirect:/posts/" + id;
+    }
+
+
+    @PostMapping(value = "/posts/{id}/delete")
+    public String deletePost(
+            @PathVariable(name = "id") Long id) {
+        postService.deletePost(id);
+        return "redirect:/posts";
     }
 }

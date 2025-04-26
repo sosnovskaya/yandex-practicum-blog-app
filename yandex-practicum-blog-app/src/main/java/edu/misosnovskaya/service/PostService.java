@@ -9,9 +9,11 @@ public interface PostService {
 
     Post getPost(Long postId);
 
-    Post editPost(Long id, String title, String text, MultipartFile image, String tags);
+    void editPost(Long id, String title, String text, MultipartFile image, String tags);
 
     PagingPostsInfo findPagingPosts(String search, int pageSize, int pageNumber);
 
     void updateLikesCount(Long id, boolean like);
+
+    void deletePost(Long id);
 }

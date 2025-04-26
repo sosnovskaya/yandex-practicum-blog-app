@@ -1,7 +1,10 @@
 package edu.misosnovskaya.utils;
 
+import edu.misosnovskaya.configuration.AppValues;
 import edu.misosnovskaya.entity.TagEntity;
 import edu.misosnovskaya.exceptions.UploadingFileException;
+import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +20,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Component
+@AllArgsConstructor
 public class PostProcessUtils {
+
+    private final AppValues appValues;
     public Set<TagEntity> extractHashtags(String input) {
         Set<TagEntity> hashtags = new LinkedHashSet<>();
 
@@ -31,10 +37,10 @@ public class PostProcessUtils {
         return hashtags;
     }
 
-    public String storeFileToPath(MultipartFile file, String uploadDir) {
+    public String storeFileToPath(MultipartFile file) {
         Path filePath;
         try {
-            Path uploadPath = Paths.get(uploadDir);
+            Path uploadPath = Paths.get(appValues.getUploadDir());
 
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
@@ -48,5 +54,24 @@ public class PostProcessUtils {
         }
 
         return filePath.toString();
+    }
+
+    public ByteArrayResource getFileFromPath(String filePath) {
+        try {
+            Path uploadPath = Paths.get(filePath);
+            byte[] fileContent = Files.readAllBytes(uploadPath);
+            return new ByteArrayResource(fileContent);
+        } catch (IOException e) {
+            throw new UploadingFileException(String.format("Could not load file from path, [filePath = %s]", filePath), e);
+        }
+    }
+
+    public void deleteFile(String filePath) {
+        try {
+            Path path = Paths.get(filePath);
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            throw new UploadingFileException("Failed to delete file: " + filePath, e);
+        }
     }
 }
