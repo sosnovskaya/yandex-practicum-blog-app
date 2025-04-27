@@ -1,6 +1,5 @@
 package edu.misosnovskaya.repository.impl;
 
-import edu.misosnovskaya.config.TestConfig;
 import edu.misosnovskaya.entity.PostEntity;
 import edu.misosnovskaya.repository.ImageRepository;
 import edu.misosnovskaya.repository.PostRepository;
@@ -9,9 +8,8 @@ import edu.misosnovskaya.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.Optional;
 
@@ -19,8 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
-@WebAppConfiguration
-@SpringJUnitConfig(classes = {TestConfig.class})
+@SpringBootTest
 class ImageRepositoryImplTest {
 
     @Autowired

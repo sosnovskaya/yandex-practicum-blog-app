@@ -1,2 +1,7 @@
 target/
-/.idea
+/yandex-practicum-blog-app/.idea
+logs/
+
+.gradle
+build/
+!yandex-practicum-blog-app/gradle/wrapper/gradle-wrapper.jar

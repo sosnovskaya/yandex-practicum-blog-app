@@ -1,17 +1,14 @@
 package edu.misosnovskaya.controller;
 
-import edu.misosnovskaya.config.TestConfig;
 import edu.misosnovskaya.service.PostService;
 import edu.misosnovskaya.utils.TestUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -23,23 +20,19 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@SpringJUnitConfig(classes = {TestConfig.class})
-@WebAppConfiguration
+@WebMvcTest(controllers = PostController.class)
 class PostControllerTest {
 
-    @Autowired
-    private PostController postController;
-
-    @MockitoBean
+    @MockBean
     private PostService postService;
 
+    @Autowired
     private MockMvc mockMvc;
 
     MockMultipartFile imageFile;
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(postController).build();
         imageFile = new MockMultipartFile(
                 "image",
                 "test.jpg",

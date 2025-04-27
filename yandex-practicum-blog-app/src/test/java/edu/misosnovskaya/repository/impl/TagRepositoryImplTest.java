@@ -1,6 +1,5 @@
 package edu.misosnovskaya.repository.impl;
 
-import edu.misosnovskaya.config.TestConfig;
 import edu.misosnovskaya.entity.PostEntity;
 import edu.misosnovskaya.entity.TagEntity;
 import edu.misosnovskaya.repository.PostRepository;
@@ -10,9 +9,8 @@ import edu.misosnovskaya.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
@@ -20,8 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@WebAppConfiguration
-@SpringJUnitConfig(classes = {TestConfig.class})
+@SpringBootTest
 class TagRepositoryImplTest {
 
     @Autowired
